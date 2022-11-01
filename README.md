@@ -1,3 +1,24 @@
+# SQUEEZE/UNSQUEEZE
+
+My forked version, based off [larsbrinkhoff/squeeze](https://github.com/larsbrinkhoff/squeeze).
+
+Changes I have made:
+- Modernise C syntax from K&R to ANSI/ISO
+- Add 'make clean'
+- Add .gitignore
+- Replace original `README` with this `README.md`
+- Add `LICENSE` (which notes that the actual license of this code is unclear)
+- Add `roundtrip.sh` as a test/demo
+
+# Test/example
+
+Run: `./roundtrip.sh README.md`.
+
+It both performs a round-trip test, and demonstrates how to use.
+
+## Original README
+
+```
 Included in this distribution of 'sq' and 'usq' are:
 
 	1) sq.1			- man page
@@ -97,4 +118,4 @@ tested on the system "C" compiler under Berkeley 4.2BSD [VAX 750].
     this change will not affect adversely any compiler I know of (and it
     is better style anyway...) so I suggest that it be added into the
     source SQU-PORT when it is convenient.
-
+```
