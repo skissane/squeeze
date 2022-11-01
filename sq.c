@@ -68,13 +68,15 @@
 #define VERSION "3.2   05/04/85"
 
 #include <stdio.h>
+#include <string.h>
 #include "sqcom.h"
 #include "sq.h"
 #define FALSE 0
 
-main(argc, argv)
-int argc;
-char *argv[];
+void obey(char *p);
+void squeeze(char *infile, char *outfile);
+
+int main(int argc, char **argv)
 {
 	int i,c;
 	char inparg[128];	/* parameter from input */
@@ -106,8 +108,7 @@ char *argv[];
 
 /* ejecteject */
 
-obey(p)
-char *p;
+void obey(char *p)
 {
 	char *q;
 	char outfile[128];	/* output file spec. */
@@ -153,10 +154,9 @@ char *p;
 
 /* ejecteject */
 
-squeeze(infile, outfile)
-char *infile, *outfile;
+void squeeze(char *infile, char *outfile)
 {
-	int i, c,c2;
+	int c;
 	FILE *inbuff, *outbuff;		/* file buffers */
 
 	printf("%s -> %s: ", infile, outfile);
@@ -175,7 +175,7 @@ char *infile, *outfile;
 	crc = 0;	/* initialize checksum */
 	printf("analyzing, ");
 	init_ncr();
-	init_huff(inbuff);   
+	init_huff(inbuff);
 	fclose(inbuff);
 
 	/* Write output file header with decoding info */
@@ -194,7 +194,6 @@ char *infile, *outfile;
 		putce(c, outbuff);
 	oflush(outbuff);
 	printf(" done.\n");
-closeall:
 	fclose(inbuff);
 closeout:
 	fclose(outbuff);

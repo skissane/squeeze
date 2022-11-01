@@ -11,3 +11,7 @@ EXTERN int curin;	/* last byte value read */
 /* Variables associated with repetition decoding */
 EXTERN int repct;	/*Number of times to retirn value*/
 EXTERN int value;	/*current byte value or EOF */
+
+void init_cr(void);
+void init_huff(void);
+int getcr(FILE *ib);

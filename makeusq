@@ -2,3 +2,7 @@ CFLAGS=-O
 usq:	usq.o utr.o
 	cc $(CFLAGS) -o usq usq.o utr.o
 usq.o utr.o: usq.h sqcom.h
+
+.PHONY:	clean
+clean:
+	@rm -f usq *.o

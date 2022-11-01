@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "sqcom.h"
 #include "sq.h"
@@ -11,20 +12,19 @@
  * are encoded as value, DLE, count for count >= 3.
  */
 
-init_ncr()	/*initialize getcnr() */
+void init_ncr(void)	/*initialize getcnr() */
 {
 	state = NOHIST;
 }
 
 int
-getcnr(iob)
-FILE *iob;
+getcnr(FILE *iob)
 {
 	switch(state) {
 	case NOHIST:
 		/* No relevant history */
 		state = SENTCHAR;
-		return (lastchar = getc_crc(iob));   
+		return (lastchar = getc_crc(iob));
 	case SENTCHAR:
 		/* Lastchar is set, need lookahead */
 		switch(lastchar) {

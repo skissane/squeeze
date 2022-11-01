@@ -4,7 +4,7 @@
 #include "sqcom.h"
 #include "sq.h"
 
-pcounts()
+void pcounts(void)
 {
 	int i;
 
@@ -19,7 +19,7 @@ pcounts()
 	}
 }
 
-phuff()
+void phuff(void)
 {
 	int i;
 

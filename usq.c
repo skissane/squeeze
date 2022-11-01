@@ -28,7 +28,7 @@
  * terminates the program.
  *
  * The unsqueezed file name is recorded in the squeezed file.
- * 
+ *
  */
 /* CHANGE HISTORY:
  * 1.3	Close inbuff to avoid exceeding maximum number of
@@ -49,6 +49,7 @@
 
 #define SQMAIN
 
+#include <stdlib.h>
 #include <stdio.h>
 #include "sqcom.h"
 #include "usq.h"
@@ -58,9 +59,12 @@
 unsigned int dispcnt;	/* How much of each file to preview */
 char	ffflag;		/* should formfeed separate preview from different files */
 
-main(argc, argv)
-int argc;
-char *argv[];
+void obey(char *p);
+void unsqueeze(char *infile);
+int getw16(FILE *iob);
+unsigned getx16(FILE *iob);
+
+int main(int argc, char **argv)
 {
 	int i,c;
 	char inparg[16];	/* parameter from input */
@@ -93,13 +97,12 @@ char *argv[];
 
 /* ejecteject */
 
-obey(p)
-char *p;
+void obey(char *p)
 {
-	char *q, cc;
+	char *q;
 
 	if(*p == '-') {
-		if(ffflag = ((*(p+1) == 'F') || (*(p+1) == 'f')))
+		if((ffflag = ((*(p+1) == 'F') || (*(p+1) == 'f'))))
 			++p;
 		/* Set number of lines of each file to view */
 		dispcnt = 65535;	/* default */
@@ -107,7 +110,7 @@ char *p;
 			if((dispcnt = atoi(p + 1)) == 0)
 				printf("\nBAD COUNT %s", p + 1);
 		return;
-	}	
+	}
 
 	/* Check for ambiguous (wild-card) name */
 	for(q = p; *q != '\0'; ++q)
@@ -121,8 +124,7 @@ char *p;
 
 /* ejecteject */
 
-unsqueeze(infile)
-char *infile;
+void unsqueeze(char *infile)
 {
 	FILE *inbuff, *outbuff;	/* file buffers */
 	int i, c;
@@ -242,27 +244,20 @@ closein:
 	fclose(inbuff);
 }
 
-getw16(iob)			/* get 16-bit word from file */
-FILE *iob;
+int getw16(FILE *iob)		/* get 16-bit word from file */
 {
-int temp;
+	int temp;
 
-temp = getc(iob);		/* get low order byte */
-temp |= getc(iob) << 8;
-if (temp & 0x8000) temp |= (~0) << 15;	/* propogate sign for big ints */
-return (temp);
-
+	temp = getc(iob);		/* get low order byte */
+	temp |= getc(iob) << 8;
+	if (temp & 0x8000) temp |= (~0) << 15;	/* propogate sign for big ints */
+	return (temp);
 }
 
-
-getx16(iob)			/* get 16-bit (unsigned) word from file */
-FILE *iob;
+unsigned getx16(FILE *iob)	/* get 16-bit (unsigned) word from file */
 {
-int temp;
+	int temp;
 
-temp = getc(iob);		/* get low order byte */
-return (temp | (getc(iob) << 8));
-
+	temp = getc(iob);		/* get low order byte */
+	return (temp | (getc(iob) << 8));
 }
-
-

@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "sqcom.h"
 #include "sq.h"
@@ -6,8 +7,7 @@
 /* Get next byte from file and update checksum */
 
 int
-getc_crc(ib)
-FILE *ib;
+getc_crc(FILE *ib)
 {
 	int c;
 
@@ -22,17 +22,13 @@ FILE *ib;
 static char obuf[128];
 static int oblen = 0;
 
-putce(c,  iob)
-int c;
-FILE *iob;
+void putce(int c, FILE *iob)
 {
 	obuf[oblen++] = c;
 	if (oblen >= sizeof(obuf)) oflush(iob);
 }
 
-putwe(w,  iob)
-int w;
-FILE *iob;
+void putwe(int w, FILE *iob)
 {
 	obuf[oblen++] = w;
 	if (oblen >= sizeof(obuf)) oflush(iob);
@@ -40,8 +36,8 @@ FILE *iob;
 	if (oblen >= sizeof(obuf)) oflush(iob);
 }
 
-oflush(iob)				/* flush output buffer */
-FILE *iob;
+void oflush(FILE *iob)				/* flush output buffer */
+
 {
 	if (oblen && !fwrite(obuf, oblen, 1, iob)) {
 		printf("Error writing output file\n");

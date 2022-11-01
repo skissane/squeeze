@@ -6,6 +6,16 @@
 #define TRUE 1
 #define FALSE 0
 
+void adjust(int *list, int top, int bottom);
+void bld_tree(int *list, int len);
+int buildenc(int level, int root);
+void heap(int *list, int length);
+void init_enc(void);
+void init_huff(FILE *ib);
+void init_tree(void);
+void scale(unsigned int ceil);
+void wrt_head(FILE *ob, char *infile);
+
 /******** Second translation - bytes to variable length bit strings *********/
 
 
@@ -44,8 +54,7 @@
  * to get the frequency distribution of the various values.
  */
 
-init_huff(ib)          
-FILE *ib;
+void init_huff(FILE *ib)
 {
 	int c, i;
 	int btlist[NUMVALS];	/* list of intermediate binary trees */
@@ -58,7 +67,7 @@ FILE *ib;
 
 	/* Build frequency info in tree */
 	do {
-		c = getcnr(ib);        
+		c = getcnr(ib);
 		if(c == EOF)
 			c = SPEOF;
 		if(*(wp = &node[c].weight) !=  MAXCOUNT)
@@ -66,7 +75,7 @@ FILE *ib;
 	} while(c != SPEOF);
 #ifdef DEBUG
 	pcounts();	/* debugging aid */
-#endif	
+#endif
 	ceiling = MAXCOUNT;
 
 	do {	/* Keep trying to scale and encode */
@@ -120,10 +129,9 @@ FILE *ib;
  * used if necessary to limit the code length.
  */
 
-scale(ceil)
-unsigned int ceil;	/* upper limit on total weight */
+void scale(unsigned int ceil)	/* upper limit on total weight */
 {
-	int c, ovflw, divisor, i;
+	int ovflw, divisor, i;
 	unsigned int w, sum;
 	char increased;		/* flag */
 
@@ -162,8 +170,7 @@ unsigned int ceil;	/* upper limit on total weight */
  * might provoke rescaling.
  */
 
-heap(list, length)
-int list[], length;
+void heap(int *list, int length)
 {
 	int i;
 
@@ -173,11 +180,10 @@ int list[], length;
 
 /* Make a heap from a heap with a new top */
 
-adjust(list, top, bottom)
-int list[], top, bottom;
+void adjust(int *list, int top, int bottom)
 {
 	int k, temp;
-	char cmptrees();
+	char cmptrees(int a, int b);
 
 	k = 2 * top + 1;	/* left child of top */
 	temp = list[top];	/* remember root node of top tree */
@@ -201,8 +207,7 @@ int list[], top, bottom;
  */
 
 char	/* Boolean */
-cmptrees(a, b)
-int a, b;	/* root nodes of trees */
+cmptrees(int a, int b)	/* root nodes of trees */
 {
 	if(node[a].weight > node[b].weight)
 		return (TRUE);
@@ -228,15 +233,12 @@ int a, b;	/* root nodes of trees */
  * reheaping the shorter list.
  */
 
-bld_tree(list, len)
-int list[];
-int len;
+void bld_tree(int *list, int len)
 {
 	int freenode;		/* next free node in tree */
 	int lch, rch;		/* temporaries for left, right children */
 	struct nd *frnp;	/* free node pointer */
-	int i;
-	char maxchar();
+	char maxchar(char a, char b);
 
 	/* Initialize index to next available (non-leaf) node.
 	 * Lower numbered nodes correspond to leaves (data values).
@@ -273,8 +275,7 @@ int len;
 }
 /*  */
 char
-maxchar(a, b)
-char a, b;
+maxchar(char a, char b)
 {
 	return (a > b ? a : b);
 }
@@ -282,7 +283,7 @@ char a, b;
  * with zero weight and depth.
  */
 
-init_tree()
+void init_tree(void)
 {
 	int i;
 
@@ -294,7 +295,7 @@ init_tree()
 	}
 }
 
-init_enc()
+void init_enc(void)
 {
 	int i;
 
@@ -312,10 +313,10 @@ init_enc()
  * Returns ERROR if codes are too long.
  */
 
-int		/* returns ERROR or NULL */
-buildenc(level, root)
-int level;/* level of tree being examined, from zero */
-int root; /* root of subtree is also data value if leaf */
+int		/* returns ERROR or 0 */
+buildenc(int level, int root)
+          /* level of tree being examined, from zero */
+          /* root of subtree is also data value if leaf */
 {
 	int l, r;
 
@@ -334,7 +335,7 @@ int root; /* root of subtree is also data value if leaf */
 #ifdef DEBUG
 		if (debug) printf("  codelen[%d]=%d,code[%d]=%02x\n",root,codelen[root],root,code[root]);
 #endif
-		return ((level > 16) ? ERROR : NULL);
+		return ((level > 16) ? ERROR : 0);
 	} else {
 		if( l != NOCHILD) {
 			/* Clear path bit and continue deeper */
@@ -351,14 +352,12 @@ int root; /* root of subtree is also data value if leaf */
 				return (ERROR);
 		}
 	}
-	return (NULL);	/* if we got here we're ok so far */
+	return 0;	/* if we got here we're ok so far */
 }
 /*  */
 /* Write out the header of the compressed file */
 
-wrt_head(ob, infile)
-FILE *ob;
-char *infile;	/* input file name (w/ or w/o drive) */
+void wrt_head(FILE *ob, char *infile)	/* input file name (w/ or w/o drive) */
 {
 	int i, k, l, r;
 	int numnodes;		/* nbr of nodes in simplified tree */
@@ -412,11 +411,10 @@ char *infile;	/* input file name (w/ or w/o drive) */
  */
 
 int				/*  Returns byte values except for EOF */
-gethuff(ib)
-FILE *ib;
+gethuff(FILE *ib)
 {
 	unsigned int rbyte;	/* Result byte value */
-	char need, take;	/* numbers of bits */
+	char need;		/* numbers of bits */
 
 	rbyte = 0;
 	need = 8;		/* build one byte per call */

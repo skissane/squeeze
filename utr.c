@@ -3,14 +3,16 @@
 #include "usq.h"
 #define ERROR -1
 
+int getuhuff(FILE *ib);
+
 /* initialize decoding functions */
 
-init_cr()
+void init_cr(void)
 {
 	repct = 0;
 }
 
-init_huff()
+void init_huff(void)
 {
 	bpos = 99;	/* force initial read */
 }
@@ -25,8 +27,7 @@ init_huff()
  */
 
 int
-getcr(ib)
-FILE *ib;
+getcr(FILE *ib)
 {
 	int c;
 
@@ -63,11 +64,9 @@ FILE *ib;
  */
 
 int
-getuhuff(ib)
-FILE *ib;
+getuhuff(FILE *ib)
 {
 	int i;
-	int bitval;
 
 	/* Follow bit stream in tree to a leaf*/
 	i = 0;	/* Start at root of tree */

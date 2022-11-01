@@ -52,3 +52,16 @@ EXTERN unsigned int tcode;		/* temporary code value */
 EXTERN int curin;		/* Value currently being encoded */
 EXTERN char cbitsrem;		/* Number of code string bits remaining */
 EXTERN unsigned int ccode;	/* Current code shifted so next code bit is at right */
+
+/* Function prototypes */
+
+void init_ncr(void);
+void init_huff(FILE *ib);
+void wrt_head(FILE *ob, char *infile);
+int gethuff(FILE *ib);
+int getcnr(FILE *iob);
+int getc_crc(FILE *ib);
+void putce(int c, FILE *iob);
+void putwe(int w, FILE *iob);
+void oflush(FILE *iob);
+void pcounts(void);
